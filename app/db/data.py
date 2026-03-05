@@ -1,0 +1,13 @@
+experiment_list = {"v260301": {"experiment_date": "05.03.2026", "is_done": True, "project": "MACsPnNr2I",
+                               "goal": "to do", "object": "5 solar cells ITO/PEDOT:PSS/PVK/C60/BCP/Ag",
+                               "perovskite": "MAPbBr2I", "samples": ["Ref", "Cs_5", "Cs_10", "Cs_15", "Cs_20"],
+                               },
+                    "v260302": {"experiment_date": "06.03.2026", "is_done": False, "project": "MACsPnNr2I",
+                               "goal": "to do", "object": "5 solar cells ITO/PEDOT:PSS/PVK/C60/BCP/Ag",
+                               "perovskite": "MAPbBr2I", "samples": ["Ref", "Cs_5", "Cs_10", "Cs_15", "Cs_20"],
+                               },
+                    "v260303": {"experiment_date": "07.03.2026",  "is_done": False, "project": "MACsPnNr2I",
+                               "goal": "to do", "object": "5 solar cells ITO/PEDOT:PSS/PVK/C60/BCP/Ag",
+                               "perovskite": "MAPbBr2I", "samples": ["Ref", "Cs_5", "Cs_10", "Cs_15", "Cs_20"],
+                               },
+                               }
