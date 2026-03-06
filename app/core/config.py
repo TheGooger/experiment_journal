@@ -11,4 +11,6 @@ class Settings(BaseSettings):
     ECHO: bool = True
 
     DB_URL: str = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
-    
+
+
+settings = Settings()
