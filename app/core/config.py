@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = "postgres"
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: str = "5432"
-    POSTGRES_DB: str = "exmeriment_journal"
+    POSTGRES_DB: str = "experiment_journal"
 
     ECHO: bool = True
 
