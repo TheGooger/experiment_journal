@@ -31,7 +31,7 @@ class ExperimentUpdate(BaseModel):
     samples: Optional[list[str]] = None
 
 
-class ExperimentRead(BaseModel):
+class ExperimentRead(ExperimentBase):
     id: uuid.UUID
     created_at: datetime
     updated_at: datetime
