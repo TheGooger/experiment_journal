@@ -67,6 +67,6 @@ class ExperimentService:
     ):
         
         result = await self.repository.delete(db, experiment_number)
-        if result is None:
+        if not result:
             raise ExperimentNotFound(f"Experiment with number {experiment_number} not found")
             

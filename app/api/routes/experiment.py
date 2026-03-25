@@ -78,5 +78,7 @@ async def delete_experiment(
     experiment_number: str,
     db: AsyncSession = Depends(get_db),
 ):
-    await service.delete_experiment(db, experiment_number)
-    
+    try:
+        await service.delete_experiment(db, experiment_number)
+    except ExperimentNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
