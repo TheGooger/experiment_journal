@@ -68,4 +68,15 @@ async def update_experiment(
         return experiment
     except ExperimentNotFound as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@router.delete(
+    "/{experiment_number}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+async def delete_experiment(
+    experiment_number: str,
+    db: AsyncSession = Depends(get_db),
+):
+    await service.delete_experiment(db, experiment_number)
     

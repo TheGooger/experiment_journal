@@ -60,3 +60,13 @@ class ExperimentService:
         return experiment
         
     
+    async def delete_experiment(
+            self,
+            db: AsyncSession,
+            experiment_number: str,
+    ):
+        
+        result = await self.repository.delete(db, experiment_number)
+        if result is None:
+            raise ExperimentNotFound(f"Experiment with number {experiment_number} not found")
+            

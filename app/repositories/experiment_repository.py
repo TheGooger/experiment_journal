@@ -77,6 +77,22 @@ class ExperimentRepository:
 
         return experiment 
 
+
+    async def delete(
+            self, 
+            db: AsyncSession,
+            experiment_number: str,
+    ) -> bool:
         
 
+        statement = select(Experiment).where(Experiment.experiment_number == experiment_number)
+        result = await db.execute(statement)
+        experiment = result.scalar_one_or_none()
 
+        if experiment is None:
+            return False
+        
+        await db.delete(experiment)
+        await db.commit()
+        return True
+    
