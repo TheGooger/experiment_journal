@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,6 +23,34 @@ class ExperimentRepository:
         await db.commit()
         await db.refresh(experiment)
 
+        return experiment
+    
+
+    async def read_all(
+            self,
+            db:AsyncSession,
+    ) -> Sequence[Experiment]:
+        
+        statement = select(Experiment).order_by(Experiment.experiment_number)
+        result = await db.execute(statement)
+
+        return result.scalars().all()
+    
+
+    async def read_one(
+            self,
+            db: AsyncSession,
+            experiment_number: str,
+    ) -> Optional[Experiment]:
+        
+        statement = select(Experiment).where(Experiment.experiment_number == experiment_number)
+        result = await db.execute(statement)
+        experiment = result.scalar_one_or_none()
+
+
+        if not experiment:
+            return None
+        
         return experiment
     
 

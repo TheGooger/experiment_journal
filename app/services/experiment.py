@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -20,6 +20,30 @@ class ExperimentService:
     ) -> Experiment:
         experiment = await self.repository.create(db, data)
 
+        return experiment
+    
+
+    async def read_all_experiments(
+            self,
+            db: AsyncSession,
+    ) -> Sequence[Experiment]:
+        
+        experiment_list = await self.repository.read_all(db)
+
+        return experiment_list
+    
+
+    async def read_one_experiment(
+            self,
+            db: AsyncSession,
+            experiment_number: str,
+    ) -> Optional[Experiment]:
+        
+        experiment = await self.repository.read_one(db, experiment_number)
+
+        if experiment is None:
+            raise ExperimentNotFound(f"Experiment with number {experiment_number} not found")
+        
         return experiment
     
 
