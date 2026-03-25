@@ -8,6 +8,6 @@ app = FastAPI()
 app.include_router(experiment.router)
 
 
-@app.get("/home")
-def get_gome():
+@app.get("/")
+def get_home():
     return {"hello": "world"}
