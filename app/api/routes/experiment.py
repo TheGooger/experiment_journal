@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
-from app.schemas.experiment import ExperimentCreate, ExperimentRead
+from app.schemas.experiment import ExperimentCreate, ExperimentRead, ExperimentUpdate
 from app.services.experiment import ExperimentService
+from app.core.exceptions import ExperimentNotFound
 
 
 router = APIRouter(prefix="/experiments", tags=["experiments"])
@@ -29,3 +30,19 @@ async def create_experiment(
 
     return experiment
  
+@router.patch(
+     "/{experiment_number}",
+     status_code=status.HTTP_200_OK,
+     response_model=ExperimentRead,
+ )
+async def update_experiment(
+    data: ExperimentUpdate,
+    experiment_number: str,
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        experiment = await service.update_experiment(db, data, experiment_number)
+        return experiment
+    except ExperimentNotFound as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    

@@ -1,7 +1,10 @@
+from typing import Optional
+
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.experiment import Experiment
-from app.schemas.experiment import ExperimentCreate
+from app.schemas.experiment import ExperimentCreate, ExperimentUpdate
 
 
 class ExperimentRepository:
@@ -22,3 +25,30 @@ class ExperimentRepository:
 
         return experiment
     
+
+    async def update(
+            self,
+            db: AsyncSession,
+            data: ExperimentUpdate,
+            experiment_number: str,
+    ) -> Optional[Experiment]:
+        
+        statement = select(Experiment).where(Experiment.experiment_number == experiment_number)
+        result = await db.execute(statement)
+        experiment = result.scalar_one_or_none()
+
+
+        if not experiment:
+            return None
+        
+        for key, value in data.model_dump(exclude_none=True).items():
+            setattr(experiment, key, value)
+        
+        await db.commit()
+        await db.refresh(experiment)
+
+        return experiment 
+
+        
+
+
