@@ -1,12 +1,16 @@
+import os
+from dotenv import load_dotenv
+
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    POSTGRES_USER: str = "postgres"
-    POSTGRES_PASSWORD: str = "postgres"
-    POSTGRES_HOST: str = "localhost"
-    POSTGRES_PORT: str = "5432"
-    POSTGRES_DB: str = "experiment_journal"
+    load_dotenv()
+    POSTGRES_USER: str | None = os.environ.get("POSTGRES_USER")
+    POSTGRES_PASSWORD: str | None = os.environ.get("POSTGRES_PASSWORD")
+    POSTGRES_HOST: str | None = os.environ.get("POSTGRES_HOST")
+    POSTGRES_PORT: str | None = os.environ.get("POSTGRES_PORT")
+    POSTGRES_DB: str | None = os.environ.get("POSTGRES_DB")
 
     ECHO: bool = True
 
