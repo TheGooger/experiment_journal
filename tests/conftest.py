@@ -2,8 +2,8 @@ import pytest
 import asyncio
 import os
 from dotenv import load_dotenv
-from typing import AsyncGenerator, Generator
-from fastapi.testclient import TestClient
+from typing import AsyncGenerator
+from httpx import AsyncClient, ASGITransport
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.pool import NullPool
@@ -68,7 +68,10 @@ async def db_session(engine) -> AsyncGenerator[AsyncSession, None]:
 
 
 @pytest.fixture
-def client(db_session) -> Generator[TestClient, None, None]:
+async def async_client(db_session) -> AsyncGenerator[AsyncClient, None]:
     """Синхронный тестовый клиент FastAPI"""
-    with TestClient(app=app) as test_client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://test",
+    ) as test_client:
         yield test_client
