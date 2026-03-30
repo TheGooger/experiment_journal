@@ -1,10 +1,10 @@
 import uuid
 from datetime import datetime
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, ConfigDict
 
 
 class UserBase(BaseModel):
-    user_name: EmailStr
+    user_name: str
 
 
 class UserCreate(UserBase):
