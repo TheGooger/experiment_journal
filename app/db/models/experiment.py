@@ -10,6 +10,9 @@ from sqlalchemy.sql import func
 
 from .base import Base
 
+if TYPE_CHECKING:
+    from .user import User
+
 
 class Experiment(Base):
     __tablename__ = "experiments"
@@ -34,3 +37,11 @@ class Experiment(Base):
         onupdate=func.now(),
         nullable=False,
     )
+
+    created_by_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id"),
+        nullable=False,
+    )
+
+    owner: Mapped["User"] = relationship(back_populates="experiments")
