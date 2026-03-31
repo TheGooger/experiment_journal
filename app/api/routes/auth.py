@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
@@ -22,11 +23,15 @@ async def register(
     
 @router.post("/login")
 async def login(
-    data: UserCreate,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        token = await service.login(db, data.user_name, data.pasword)
+        token = await service.login(
+            db,
+            form_data.username,
+            form_data.password,
+        )
         return {"access_token": token, "token_type": "bearer"}
     except ValueError:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid credentials")
