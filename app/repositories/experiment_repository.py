@@ -1,4 +1,5 @@
 from typing import Optional, Sequence
+import uuid
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,9 +15,11 @@ class ExperimentRepository:
             self,
             db: AsyncSession,
             data: ExperimentCreate,
+            user_id: uuid.UUID,
     ) -> Experiment:
         
         experiment = Experiment(**data.model_dump())
+        experiment.created_by_id = user_id
 
         db.add(experiment)
 
@@ -29,9 +32,12 @@ class ExperimentRepository:
     async def read_all(
             self,
             db:AsyncSession,
+            user_id: uuid.UUID,
     ) -> Sequence[Experiment]:
         
-        statement = select(Experiment).order_by(Experiment.experiment_number)
+        statement = select(Experiment).where(
+            Experiment.created_by_id == user_id,
+        ).order_by(Experiment.experiment_number)
         result = await db.execute(statement)
 
         return result.scalars().all()
@@ -41,6 +47,7 @@ class ExperimentRepository:
             self,
             db: AsyncSession,
             experiment_number: str,
+            user_id: uuid.UUID,
     ) -> Optional[Experiment]:
         
         statement = select(Experiment).where(Experiment.experiment_number == experiment_number)
@@ -51,6 +58,10 @@ class ExperimentRepository:
         if not experiment:
             return None
         
+
+        if experiment.created_by_id != user_id:
+            return None
+        
         return experiment
     
 
@@ -59,6 +70,7 @@ class ExperimentRepository:
             db: AsyncSession,
             data: ExperimentUpdate,
             experiment_number: str,
+            user_id: uuid.UUID,
     ) -> Optional[Experiment]:
         
         statement = select(Experiment).where(Experiment.experiment_number == experiment_number)
@@ -67,6 +79,10 @@ class ExperimentRepository:
 
 
         if not experiment:
+            return None
+        
+
+        if experiment.created_by_id != user_id:
             return None
         
         for key, value in data.model_dump(exclude_none=True).items():
@@ -82,6 +98,7 @@ class ExperimentRepository:
             self, 
             db: AsyncSession,
             experiment_number: str,
+            user_id: uuid.UUID,
     ) -> bool:
         
 
@@ -90,6 +107,10 @@ class ExperimentRepository:
         experiment = result.scalar_one_or_none()
 
         if experiment is None:
+            return False
+        
+
+        if experiment.created_by_id != user_id:
             return False
         
         await db.delete(experiment)
