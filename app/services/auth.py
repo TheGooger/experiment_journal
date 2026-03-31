@@ -16,7 +16,7 @@ class AuthService:
         if existing:
             raise ValueError("User already exists")
         
-        hashed = hash_password(data.pasword)
+        hashed = hash_password(data.password)
 
         user = await self.repo.create(db, data.user_name, hashed)
 
