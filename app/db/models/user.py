@@ -1,12 +1,16 @@
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import String, DateTime
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from app.db.models.base import Base
+
+if TYPE_CHECKING:
+    from .experiment import Experiment
 
 
 class User(Base):
@@ -32,3 +36,9 @@ class User(Base):
         server_default=func.now(),
         nullable=False,
     )
+
+    experiments: Mapped[list["Experiment"]] = relationship(
+        back_populates="owner",
+        cascade="all, delete-orphan"
+    )
+    
