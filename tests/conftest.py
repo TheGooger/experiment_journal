@@ -1,6 +1,7 @@
 import pytest
 import asyncio
 import os
+import uuid
 from dotenv import load_dotenv
 from typing import AsyncGenerator
 from httpx import AsyncClient, ASGITransport
@@ -9,6 +10,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from sqlalchemy.pool import NullPool
 
 from app.db.models.base import Base
+from app.db.models.user import User
 from app.db.session import get_db 
 from main import app
 
@@ -75,3 +77,43 @@ async def async_client(db_session) -> AsyncGenerator[AsyncClient, None]:
         base_url="http://test",
     ) as test_client:
         yield test_client
+
+
+@pytest.fixture
+async def test_user(db_session):
+    user = User(
+        id=uuid.uuid4(),
+        user_name=f"vova_test_{uuid.uuid4()}",
+        hashed_password="fake",
+    )
+
+    db_session.add(user)
+    await db_session.commit()
+    await db_session.refresh(user)
+
+    return user 
+
+
+@pytest.fixture
+async def auth_headers(async_client: AsyncClient):
+    username = f"user_{uuid.uuid4()}"
+
+    await async_client.post(
+        "/auth/register",
+        json={
+            "user_name": username,
+            "password": "123456"
+        }
+    )
+
+    response = await async_client.post(
+        "/auth/login",
+        data={
+            "username": username,
+            "password": "123456"
+        }
+    )
+
+    token = response.json()["access_token"]
+
+    return {"Authorization": f"Bearer {token}"}
