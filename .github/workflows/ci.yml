@@ -33,7 +33,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -50,6 +50,9 @@ jobs:
             echo "POSTGRES_DB=test_db" >> .env
             echo "POSTGRES_HOST=localhost" >> .env
             echo "POSTGRES_PORT=5432" >> .env
+            echo "SECRET_KEY=test_secret_key" >> .env
+            echo "ALGORITHM=HS256" >> .env
+            echo "ACCESS_TOKEN_EXPIRE_MINUTES=30" >> .env
 
       - name: Run migrations
         run: uv run alembic upgrade head
