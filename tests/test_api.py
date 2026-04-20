@@ -1,7 +1,6 @@
 import pytest
 from httpx import AsyncClient
 
-from app.schemas.experiment import ExperimentCreate
 
 
 pytestmark = pytest.mark.asyncio
@@ -22,7 +21,7 @@ async def test_create_experiment_api(async_client: AsyncClient, auth_headers):
     data = response.json()
 
     assert data["experiment_number"] == "v260307"
-    assert data["is_completed"] == True
+    assert data["is_completed"]
     assert "id" in data
 
 

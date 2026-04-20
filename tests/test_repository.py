@@ -1,6 +1,5 @@
 from datetime import datetime
 import pytest
-import uuid
 
 from app.repositories.experiment_repository import ExperimentRepository
 from app.schemas.experiment import ExperimentCreate, ExperimentUpdate
@@ -74,7 +73,7 @@ async def test_update_experiment(db_session, test_user):
     updated = await repo.update(db_session, update_data, created.experiment_number, test_user.id)
 
     assert updated is not None
-    assert updated.is_completed == True
+    assert updated.is_completed
 
 
 async def test_update_experiment_not_found(db_session, test_user):
@@ -103,7 +102,7 @@ async def test_delete_experiment(db_session, test_user):
     
     deleted = await repo.delete(db_session, created.experiment_number, test_user.id)
 
-    assert deleted == True
+    assert deleted
 
     found = await repo.read_one(db_session, created.experiment_number, test_user.id)
     assert found is None
@@ -114,4 +113,4 @@ async def test_delete_experiment_not_found(db_session, test_user):
 
     deleted = await repo.delete(db_session, "123", test_user.id)
 
-    assert deleted == False
+    assert not deleted
